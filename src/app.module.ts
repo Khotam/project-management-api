@@ -6,6 +6,8 @@ import { resolve } from 'path';
 import * as process from 'process';
 
 import config from '../config/config';
+import { UserModule } from './resources/users/user.module';
+import { OrganizationModule } from './resources/organization/organization.module';
 
 @Module({
   imports: [
@@ -34,6 +36,8 @@ import config from '../config/config';
       isGlobal: true,
       load: [config],
     }),
+    UserModule,
+    OrganizationModule,
   ],
 })
 export class AppModule {}
