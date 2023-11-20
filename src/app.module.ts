@@ -9,6 +9,7 @@ import config from '../config/config';
 import { UserModule } from './resources/user/user.module';
 import { OrganizationModule } from './resources/organization/organization.module';
 import { ProjectModule } from './resources/project/project.module';
+import { TaskModule } from './resources/task/task.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { ProjectModule } from './resources/project/project.module';
     UserModule,
     OrganizationModule,
     ProjectModule,
+    TaskModule,
   ],
 })
 export class AppModule {}
