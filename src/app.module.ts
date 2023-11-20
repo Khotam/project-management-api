@@ -8,9 +8,6 @@ import * as process from 'process';
 import config from '../config/config';
 
 @Module({
-  imports: [],
-})
-@Module({
   imports: [
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
