@@ -1,5 +1,5 @@
+import { UserRoleEnum } from 'src/shared/constants';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { UserRoleEnum } from '../constants/user.constants';
 
 @Entity({ name: 'users' })
 export class User {
