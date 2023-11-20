@@ -6,8 +6,9 @@ import { resolve } from 'path';
 import * as process from 'process';
 
 import config from '../config/config';
-import { UserModule } from './resources/users/user.module';
+import { UserModule } from './resources/user/user.module';
 import { OrganizationModule } from './resources/organization/organization.module';
+import { ProjectModule } from './resources/project/project.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { OrganizationModule } from './resources/organization/organization.module
     }),
     UserModule,
     OrganizationModule,
+    ProjectModule,
   ],
 })
 export class AppModule {}
