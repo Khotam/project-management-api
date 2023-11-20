@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class Users1700506148615 implements MigrationInterface {
-  name = 'organizations1700506148615';
+  name = 'create-organizations-and-organization_users-table1700506148615';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
