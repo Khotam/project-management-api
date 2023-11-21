@@ -5,13 +5,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Project } from './entities/project.entity';
 import { Repository } from 'typeorm';
 import { FindAllResponse } from 'src/shared/types';
+import { TaskService } from '../task/task.service';
 
 @Injectable()
 export class ProjectService {
   logger = new Logger(ProjectService.name);
   tableName = 'projects';
 
-  constructor(@InjectRepository(Project) readonly projectRepository: Repository<Project>) {}
+  constructor(
+    @InjectRepository(Project) readonly projectRepository: Repository<Project>,
+    readonly taskService: TaskService,
+  ) {}
   async create({ created_by, org_id }: CreateProjectDto) {
     const [newProject] = await this.projectRepository.query(
       `INSERT INTO ${this.tableName} (org_id, created_by) VALUES ($1, $2) RETURNING *`,
@@ -29,6 +33,10 @@ export class ProjectService {
     this.logger.log(`Items count: ${count.count}`);
 
     return { items, count: count.count };
+  }
+
+  async findAllTasks(project_id: number) {
+    return this.taskService.findAllTasksByProject(project_id);
   }
 
   async findOne(id: number): Promise<Project> {

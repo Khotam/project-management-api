@@ -18,6 +18,7 @@ export class DbExceptionsFilter implements ExceptionFilter {
     let key, value;
 
     switch (true) {
+      case code === PostgresErrorCodes.INVALID_INPUT_SYNTAX:
       case exception instanceof EntityPropertyNotFoundError:
         statusCode = HttpStatus.BAD_REQUEST;
         message = message.split('.')[0].replace('Property', 'Field').replace(/"/g, '');

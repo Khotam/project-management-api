@@ -12,13 +12,13 @@ export class Task {
   @Column({ type: 'int' })
   created_by: number;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int', nullable: true })
   worker_user_id: number;
 
   @Column({ enum: TaskStatusEnum, default: TaskStatusEnum.DONE })
   status: TaskStatusEnum;
 
-  @Column({ type: 'timestamptz' })
+  @Column({ type: 'timestamptz', nullable: true })
   due_date: Date;
 
   @Column({ type: 'timestamptz', nullable: true })

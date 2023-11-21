@@ -18,6 +18,11 @@ export class ProjectController {
     return this.projectService.findAll();
   }
 
+  @Get(':projectId(\\d+)/tasks')
+  findAllTasks(@Param('projectId') project_id: number) {
+    return this.projectService.findAllTasks(project_id);
+  }
+
   @Get(':id(\\d+)')
   findOne(@Param('id') id: number) {
     return this.projectService.findOne(id);
