@@ -46,8 +46,8 @@ export class OrganizationService {
   async update(id: number, { created_by, name }: UpdateOrganizationDto) {
     const org = await this.findOne(id);
     await this.orgsRepository.query(`UPDATE ${this.tableName} SET name = $1, created_by = $2 WHERE id = $3`, [
-      name,
-      created_by,
+      name ?? org.name,
+      created_by ?? org.created_by,
       org.id,
     ]);
     this.logger.log('Successfully updated');
