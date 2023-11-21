@@ -10,6 +10,7 @@ import { UserModule } from './resources/user/user.module';
 import { OrganizationModule } from './resources/organization/organization.module';
 import { ProjectModule } from './resources/project/project.module';
 import { TaskModule } from './resources/task/task.module';
+import { OrganizationUsersModule } from './resources/organization-user/organization-user.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { TaskModule } from './resources/task/task.module';
     }),
     UserModule,
     OrganizationModule,
+    OrganizationUsersModule,
     ProjectModule,
     TaskModule,
   ],

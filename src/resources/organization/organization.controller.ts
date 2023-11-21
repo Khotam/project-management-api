@@ -26,17 +26,17 @@ export class OrganizationController {
   }
 
   @Get(':id(\\d+)')
-  findOne(@Param('id') id: string) {
-    return this.organizationService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.organizationService.findOne(id);
   }
 
   @Put(':id(\\d+)')
-  update(@Param('id') id: string, @Body() updateOrganizationDto: UpdateOrganizationDto) {
-    return this.organizationService.update(+id, updateOrganizationDto);
+  update(@Param('id') id: number, @Body() updateOrganizationDto: UpdateOrganizationDto) {
+    return this.organizationService.update(id, updateOrganizationDto);
   }
 
   @Delete(':id(\\d+)')
-  remove(@Param('id') id: string) {
-    return this.organizationService.remove(+id);
+  remove(@Param('id') id: number) {
+    return this.organizationService.remove(id);
   }
 }
