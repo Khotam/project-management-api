@@ -45,4 +45,9 @@ export class TaskController {
   setDueDate(@Param('id') id: number, @Body('dueDate') dueDate: Date) {
     return this.taskService.assignDueDate(id, dueDate);
   }
+
+  @Post(':id(\\d+)/complete')
+  completeTask(@Param('id') id: number) {
+    return this.taskService.completeTask(id);
+  }
 }

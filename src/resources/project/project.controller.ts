@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
+import { FindProjectTasksDto } from './dto/find-project-tasks.dto';
 
 @Controller('projects')
 export class ProjectController {
@@ -19,8 +20,8 @@ export class ProjectController {
   }
 
   @Get(':projectId(\\d+)/tasks')
-  findAllTasks(@Param('projectId') projectId: number) {
-    return this.projectService.findAllTasks(projectId);
+  findAllTasks(@Param('projectId') projectId: number, @Query() findProjectTasksDto?: FindProjectTasksDto) {
+    return this.projectService.findAllTasks(projectId, findProjectTasksDto);
   }
 
   @Get(':id(\\d+)')

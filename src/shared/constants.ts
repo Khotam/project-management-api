@@ -8,6 +8,7 @@ export enum TaskStatusEnum {
   CREATED = 'created',
   IN_PROCESS = 'in-process',
   DONE = 'done',
+  DONE_OVERDUE = 'done-overdue',
 }
 
 export enum PostgresErrorCodes {

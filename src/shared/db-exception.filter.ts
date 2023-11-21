@@ -49,7 +49,7 @@ export class DbExceptionsFilter implements ExceptionFilter {
         break;
       default:
         statusCode = HttpStatus.BAD_REQUEST;
-        message = `Error while inserting values to Db (${message})`;
+        message = `DB error: ${message}`;
     }
 
     const json = {

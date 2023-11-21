@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,6 +6,7 @@ import { Task } from './entities/task.entity';
 import { Repository } from 'typeorm';
 import { FindAllResponse } from 'src/shared/types';
 import { TaskStatusEnum } from 'src/shared/constants';
+import { FindProjectTasksDto } from '../project/dto/find-project-tasks.dto';
 
 @Injectable()
 export class TaskService {
@@ -75,9 +76,17 @@ export class TaskService {
     this.logger.log('Successfully updated');
   }
 
-  async findAllTasksByProject(projectId: number) {
-    const whereQuery = `WHERE project_id = $1`;
-    const queryParams = [projectId];
+  async findAllTasksByProject(projectId: number, { status, userId }: FindProjectTasksDto) {
+    let whereQuery = `WHERE project_id = $1`;
+    const queryParams: (string | number)[] = [projectId];
+    if (userId) {
+      queryParams.push(userId);
+      whereQuery += ` AND worker_user_id = $${queryParams.length}`;
+    }
+    if (status) {
+      queryParams.push(status);
+      whereQuery += ` AND status = $${queryParams.length}`;
+    }
     const itemsPromise = this.taskRepository.query(`SELECT * FROM ${this.tableName} ${whereQuery}`, queryParams);
     const countPromise = this.taskRepository.query(`SELECT COUNT(*) FROM ${this.tableName} ${whereQuery}`, queryParams);
 
@@ -85,5 +94,29 @@ export class TaskService {
     this.logger.log(`Items count: ${count.count}`);
 
     return { tasks: items, count: count.count };
+  }
+
+  async completeTask(id: number) {
+    const task = await this.findOne(id);
+    if (!this.isTaskInProcess(task)) {
+      throw new BadRequestException('Task is not assigned yet or already done');
+    }
+    let status = TaskStatusEnum.DONE;
+    if (this.isTaskOverdue(task)) {
+      status = TaskStatusEnum.DONE_OVERDUE;
+    }
+    await this.taskRepository.query(`UPDATE ${this.tableName} SET status = $1, done_at=$2 WHERE id = $3`, [
+      status,
+      new Date(),
+      task.id,
+    ]);
+  }
+
+  private isTaskInProcess(task: Task) {
+    return task.status === TaskStatusEnum.IN_PROCESS;
+  }
+
+  private isTaskOverdue(task: Task) {
+    return new Date() > new Date(task.dueDate);
   }
 }
