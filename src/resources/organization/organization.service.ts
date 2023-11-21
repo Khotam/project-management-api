@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateOrganizationDto } from './dto/create-organization.dto';
 import { UpdateOrganizationDto } from './dto/update-organization.dto';
 import { Organization } from './entities/organization.entity';
+import { FindAllResponse } from 'src/shared/types';
 
 @Injectable()
 export class OrganizationService {
@@ -18,12 +19,12 @@ export class OrganizationService {
       `INSERT INTO ${this.tableName} (name, created_by) VALUES ($1, $2) RETURNING *`,
       [name, created_by],
     );
-    this.logger.log(`Item created`);
+    this.logger.log(`Created successfully`);
 
     return newOrg;
   }
 
-  async findAll() {
+  async findAll(): Promise<FindAllResponse<Organization>> {
     const itemsPromise = this.orgsRepository.query(`SELECT * FROM ${this.tableName}`);
     const countPromise = this.orgsRepository.query(`SELECT COUNT(*) FROM ${this.tableName}`);
     const [items, [count]] = await Promise.all([itemsPromise, countPromise]);
@@ -33,13 +34,13 @@ export class OrganizationService {
   }
 
   async findOne(id: number): Promise<Organization> {
-    const [org] = await this.orgsRepository.query(`SELECT * FROM ${this.tableName} WHERE id = $1`, [id]);
-    if (!org) {
+    const [item] = await this.orgsRepository.query(`SELECT * FROM ${this.tableName} WHERE id = $1`, [id]);
+    if (!item) {
       this.logger.debug('Item not found', id);
       throw new NotFoundException({ message: `Item with id: ${id} not found` });
     }
-    this.logger.log(`Item found`, org);
-    return org;
+    this.logger.log(`Item found`, item);
+    return item;
   }
 
   async update(id: number, { created_by, name }: UpdateOrganizationDto) {

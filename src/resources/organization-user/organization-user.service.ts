@@ -32,7 +32,7 @@ export class OrganizationUsersService {
       );
 
       await this.orgUsersRepository.query('COMMIT;');
-      this.logger.log('Organization user created successfully');
+      this.logger.log('Created successfully');
     } catch (error) {
       this.logger.error(error?.message, error);
       await this.orgUsersRepository.query('ROLLBACK;');
