@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -9,34 +9,52 @@ import { Organization } from './entities/organization.entity';
 @Injectable()
 export class OrganizationService {
   logger = new Logger(OrganizationService.name);
+  tableName = 'organizations';
 
   constructor(@InjectRepository(Organization) private orgsRepository: Repository<Organization>) {}
 
   async create({ created_by, name }: CreateOrganizationDto) {
-    const newOrg = await this.orgsRepository.query(`INSERT INTO organizations (name, created_by) VALUES ($1, $2)`, [
-      name,
-      created_by,
-    ]);
-    console.log('newOrg :>> ', newOrg);
+    const [newOrg] = await this.orgsRepository.query(
+      `INSERT INTO ${this.tableName} (name, created_by) VALUES ($1, $2) RETURNING *`,
+      [name, created_by],
+    );
     this.logger.log(`Item created`);
 
     return newOrg;
   }
 
-  findAll() {
-    return `This action returns all organization`;
+  async findAll() {
+    const itemsPromise = this.orgsRepository.query(`SELECT * FROM ${this.tableName}`);
+    const countPromise = this.orgsRepository.query(`SELECT COUNT(*) FROM ${this.tableName}`);
+    const [items, [count]] = await Promise.all([itemsPromise, countPromise]);
+    this.logger.log(`Items count: ${count.count}`);
+
+    return { items, count: count.count };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} organization`;
+  async findOne(id: number): Promise<Organization> {
+    const [org] = await this.orgsRepository.query(`SELECT * FROM ${this.tableName} WHERE id = $1`, [id]);
+    if (!org) {
+      this.logger.debug('Item not found', id);
+      throw new NotFoundException({ message: `Item with id: ${id} not found` });
+    }
+    this.logger.log(`Item found`, org);
+    return org;
   }
 
-  update(id: number, updateOrganizationDto: UpdateOrganizationDto) {
-    console.log('updateOrganizationDto :>> ', updateOrganizationDto);
-    return `This action updates a #${id} organization`;
+  async update(id: number, { created_by, name }: UpdateOrganizationDto) {
+    const org = await this.findOne(id);
+    await this.orgsRepository.query(`UPDATE ${this.tableName} SET name = $1, created_by = $2 WHERE id = $3`, [
+      name,
+      created_by,
+      org.id,
+    ]);
+    this.logger.log('Successfully updated');
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} organization`;
+  async remove(id: number) {
+    const org = await this.findOne(id);
+    await this.orgsRepository.query(`DELETE FROM ${this.tableName} WHERE id = $1`, [org.id]);
+    this.logger.log('Successfully deleted');
   }
 }
