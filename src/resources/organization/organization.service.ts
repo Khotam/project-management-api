@@ -14,10 +14,10 @@ export class OrganizationService {
 
   constructor(@InjectRepository(Organization) private orgsRepository: Repository<Organization>) {}
 
-  async create({ created_by, name }: CreateOrganizationDto) {
+  async create({ createdBy, name }: CreateOrganizationDto) {
     const [newOrg] = await this.orgsRepository.query(
       `INSERT INTO ${this.tableName} (name, created_by) VALUES ($1, $2) RETURNING *`,
-      [name, created_by],
+      [name, createdBy],
     );
     this.logger.log(`Created successfully`);
 
@@ -43,11 +43,11 @@ export class OrganizationService {
     return item;
   }
 
-  async update(id: number, { created_by, name }: UpdateOrganizationDto) {
+  async update(id: number, { createdBy, name }: UpdateOrganizationDto) {
     const org = await this.findOne(id);
     await this.orgsRepository.query(`UPDATE ${this.tableName} SET name = $1, created_by = $2 WHERE id = $3`, [
       name ?? org.name,
-      created_by ?? org.created_by,
+      createdBy ?? org.createdBy,
       org.id,
     ]);
     this.logger.log('Successfully updated');

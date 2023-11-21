@@ -19,8 +19,8 @@ export class ProjectController {
   }
 
   @Get(':projectId(\\d+)/tasks')
-  findAllTasks(@Param('projectId') project_id: number) {
-    return this.projectService.findAllTasks(project_id);
+  findAllTasks(@Param('projectId') projectId: number) {
+    return this.projectService.findAllTasks(projectId);
   }
 
   @Get(':id(\\d+)')

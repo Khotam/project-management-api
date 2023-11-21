@@ -7,23 +7,23 @@ export class Task {
   id: number;
 
   @Column({ type: 'int' })
-  project_id: number;
+  projectId: number;
 
   @Column({ type: 'int' })
-  created_by: number;
+  createdBy: number;
 
   @Column({ type: 'int', nullable: true })
-  worker_user_id: number;
+  workerUserId?: number;
 
   @Column({ enum: TaskStatusEnum, default: TaskStatusEnum.DONE })
   status: TaskStatusEnum;
 
   @Column({ type: 'timestamptz', nullable: true })
-  due_date: Date;
+  dueDate?: Date;
 
   @Column({ type: 'timestamptz', nullable: true })
-  done_at?: Date;
+  doneAt?: Date;
 
   @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
-  created_at: Date;
+  createdAt: Date;
 }

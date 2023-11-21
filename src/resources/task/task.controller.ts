@@ -36,13 +36,13 @@ export class TaskController {
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Patch(':id(\\d+)/assign-worker')
-  setWorker(@Param('id') id: number, @Body('worker_user_id') worker_user_id: number) {
-    return this.taskService.assignWorker(id, worker_user_id);
+  setWorker(@Param('id') id: number, @Body('workerUserId') workerUserId: number) {
+    return this.taskService.assignWorker(id, workerUserId);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Patch(':id(\\d+)/assign-due-date')
-  setDueDate(@Param('id') id: number, @Body('due_date') due_date: Date) {
-    return this.taskService.assignDueDate(id, due_date);
+  setDueDate(@Param('id') id: number, @Body('dueDate') dueDate: Date) {
+    return this.taskService.assignDueDate(id, dueDate);
   }
 }

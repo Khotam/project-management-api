@@ -9,5 +9,5 @@ export class Organization {
   name: string;
 
   @Column({ type: 'int' })
-  created_by: number;
+  createdBy: number;
 }

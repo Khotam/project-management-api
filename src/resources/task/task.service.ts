@@ -13,10 +13,10 @@ export class TaskService {
   tableName = 'tasks';
 
   constructor(@InjectRepository(Task) readonly taskRepository: Repository<Task>) {}
-  async create({ created_by, project_id }: CreateTaskDto) {
+  async create({ createdBy, projectId }: CreateTaskDto) {
     const [newTask] = await this.taskRepository.query(
       `INSERT INTO ${this.tableName} (project_id, created_by) VALUES ($1, $2) RETURNING *`,
-      [project_id, created_by],
+      [projectId, createdBy],
     );
     this.logger.log('Created successfully');
 
@@ -43,11 +43,11 @@ export class TaskService {
     return item;
   }
 
-  async update(id: number, { created_by, project_id }: UpdateTaskDto) {
+  async update(id: number, { createdBy, projectId }: UpdateTaskDto) {
     const task = await this.findOne(id);
     await this.taskRepository.query(`UPDATE ${this.tableName} SET project_id = $1, created_by = $2 WHERE id = $3`, [
-      project_id ?? task.project_id,
-      created_by ?? task.created_by,
+      projectId ?? task.projectId,
+      createdBy ?? task.createdBy,
       task.id,
     ]);
     this.logger.log('Successfully updated');
@@ -59,30 +59,27 @@ export class TaskService {
     this.logger.log('Successfully deleted');
   }
 
-  async assignWorker(id: number, worker_user_id: number) {
-    console.log('worker_user_id :>> ', worker_user_id);
+  async assignWorker(id: number, workerUserId: number) {
     const task = await this.findOne(id);
     await this.taskRepository.query(`UPDATE ${this.tableName} SET worker_user_id = $1, status = $2 WHERE id = $3`, [
-      worker_user_id,
+      workerUserId,
       TaskStatusEnum.IN_PROCESS,
       task.id,
     ]);
     this.logger.log('Successfully updated');
   }
 
-  async assignDueDate(id: number, due_date: Date) {
+  async assignDueDate(id: number, dueDate: Date) {
     const task = await this.findOne(id);
-    await this.taskRepository.query(`UPDATE ${this.tableName} SET due_date = $1 WHERE id = $2`, [due_date, task.id]);
+    await this.taskRepository.query(`UPDATE ${this.tableName} SET due_date = $1 WHERE id = $2`, [dueDate, task.id]);
     this.logger.log('Successfully updated');
   }
 
-  async findAllTasksByProject(project_id: number) {
-    const itemsPromise = this.taskRepository.query(`SELECT * FROM ${this.tableName} WHERE project_id = $1`, [
-      project_id,
-    ]);
-    const countPromise = this.taskRepository.query(`SELECT COUNT(*) FROM ${this.tableName} WHERE project_id = $1`, [
-      project_id,
-    ]);
+  async findAllTasksByProject(projectId: number) {
+    const whereQuery = `WHERE project_id = $1`;
+    const queryParams = [projectId];
+    const itemsPromise = this.taskRepository.query(`SELECT * FROM ${this.tableName} ${whereQuery}`, queryParams);
+    const countPromise = this.taskRepository.query(`SELECT COUNT(*) FROM ${this.tableName} ${whereQuery}`, queryParams);
 
     const [items, [count]] = await Promise.all([itemsPromise, countPromise]);
     this.logger.log(`Items count: ${count.count}`);

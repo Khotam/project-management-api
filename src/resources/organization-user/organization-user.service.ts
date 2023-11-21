@@ -17,13 +17,13 @@ export class OrganizationUsersService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async create(orgId: number, { created_by, name, role }: CreateOrganizationUserDto) {
+  async create(orgId: number, { createdBy, name, role }: CreateOrganizationUserDto) {
     await this.orgUsersRepository.query('BEGIN;');
 
     try {
       const [{ id: userId }] = await this.userRepository.query(
         `INSERT INTO ${this.userstableName} (name, role, created_by) VALUES ($1, $2, $3) RETURNING id`,
-        [name, role, created_by],
+        [name, role, createdBy],
       );
 
       await this.orgUsersRepository.query(

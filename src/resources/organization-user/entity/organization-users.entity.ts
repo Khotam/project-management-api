@@ -6,8 +6,8 @@ export class OrganizationUsers {
   id: number;
 
   @Column({ type: 'int' })
-  org_id: string;
+  orgId: string;
 
   @Column({ type: 'int' })
-  user_id: number;
+  userId: number;
 }

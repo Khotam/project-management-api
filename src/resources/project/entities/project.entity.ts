@@ -6,8 +6,8 @@ export class Project {
   id: number;
 
   @Column({ type: 'int' })
-  org_id: number;
+  orgId: number;
 
   @Column({ type: 'int' })
-  created_by: number;
+  createdBy: number;
 }

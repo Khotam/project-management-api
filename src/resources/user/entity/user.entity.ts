@@ -13,5 +13,5 @@ export class User {
   role: UserRoleEnum;
 
   @Column({ type: 'int' })
-  created_by: number;
+  createdBy: number;
 }

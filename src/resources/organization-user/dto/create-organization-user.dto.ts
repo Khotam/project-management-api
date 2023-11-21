@@ -13,5 +13,5 @@ export class CreateOrganizationUserDto {
 
   @IsDefined()
   @IsInt()
-  created_by: number;
+  createdBy: number;
 }

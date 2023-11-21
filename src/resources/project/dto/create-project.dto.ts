@@ -3,9 +3,9 @@ import { IsDefined, IsInt } from 'class-validator';
 export class CreateProjectDto {
   @IsDefined()
   @IsInt()
-  org_id: number;
+  orgId: number;
 
   @IsDefined()
   @IsInt()
-  created_by: number;
+  createdBy: number;
 }

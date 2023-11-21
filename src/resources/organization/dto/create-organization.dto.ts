@@ -8,5 +8,5 @@ export class CreateOrganizationDto {
 
   @IsDefined()
   @IsInt()
-  created_by: number;
+  createdBy: number;
 }

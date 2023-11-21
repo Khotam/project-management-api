@@ -16,10 +16,10 @@ export class ProjectService {
     @InjectRepository(Project) readonly projectRepository: Repository<Project>,
     readonly taskService: TaskService,
   ) {}
-  async create({ created_by, org_id }: CreateProjectDto) {
+  async create({ createdBy, orgId }: CreateProjectDto) {
     const [newProject] = await this.projectRepository.query(
       `INSERT INTO ${this.tableName} (org_id, created_by) VALUES ($1, $2) RETURNING *`,
-      [org_id, created_by],
+      [orgId, createdBy],
     );
     this.logger.log('Created successfully');
 
@@ -35,8 +35,8 @@ export class ProjectService {
     return { items, count: count.count };
   }
 
-  async findAllTasks(project_id: number) {
-    return this.taskService.findAllTasksByProject(project_id);
+  async findAllTasks(projectId: number) {
+    return this.taskService.findAllTasksByProject(projectId);
   }
 
   async findOne(id: number): Promise<Project> {
@@ -49,11 +49,11 @@ export class ProjectService {
     return item;
   }
 
-  async update(id: number, { created_by, org_id }: UpdateProjectDto) {
+  async update(id: number, { createdBy, orgId }: UpdateProjectDto) {
     const project = await this.findOne(id);
     await this.projectRepository.query(`UPDATE ${this.tableName} SET org_id = $1, created_by = $2 WHERE id = $3`, [
-      org_id ?? project.org_id,
-      created_by ?? project.created_by,
+      orgId ?? project.orgId,
+      createdBy ?? project.createdBy,
       project.id,
     ]);
     this.logger.log('Successfully updated');
