@@ -5,6 +5,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import * as packageJson from '../package.json';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { DbExceptionsFilter } from './shared/db-exception.filter';
 
 async function bootstrap(): Promise<void> {
   const version = packageJson.version;
@@ -15,7 +16,7 @@ async function bootstrap(): Promise<void> {
 
   app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' });
 
-  app.useGlobalFilters().useGlobalPipes(
+  app.useGlobalFilters(new DbExceptionsFilter()).useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
