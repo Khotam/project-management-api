@@ -10,14 +10,14 @@ export class AuthService {
     private readonly userService: UserService,
   ) {}
 
-  async login(username: string): Promise<{ access_token: string }> {
+  async login(username: string): Promise<{ accessToken: string }> {
     const user = await this.userService.getByName(username);
     if (!user) {
       throw new UnauthorizedException("User doesn't exist");
     }
     const payload: JwtPayload = { userId: user.id, name: user.name, role: user.role };
-    const access_token = await this.jwtService.generateToken(payload);
-    return { access_token };
+    const accessToken = await this.jwtService.generateToken(payload);
+    return { accessToken };
   }
 
   verifyToken(token: string): Promise<JwtPayload> {

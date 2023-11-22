@@ -16,7 +16,7 @@ export class OrganizationService {
 
   async create({ createdBy, name }: CreateOrganizationDto) {
     const [newOrg] = await this.orgsRepository.query(
-      `INSERT INTO ${this.tableName} (name, created_by) VALUES ($1, $2) RETURNING *`,
+      `INSERT INTO ${this.tableName} (name, "createdBy") VALUES ($1, $2) RETURNING *`,
       [name, createdBy],
     );
     this.logger.log(`Created successfully`);
@@ -45,7 +45,7 @@ export class OrganizationService {
 
   async update(id: number, { createdBy, name }: UpdateOrganizationDto) {
     const org = await this.findOne(id);
-    await this.orgsRepository.query(`UPDATE ${this.tableName} SET name = $1, created_by = $2 WHERE id = $3`, [
+    await this.orgsRepository.query(`UPDATE ${this.tableName} SET name = $1, "createdBy" = $2 WHERE id = $3`, [
       name ?? org.name,
       createdBy ?? org.createdBy,
       org.id,

@@ -19,7 +19,7 @@ export class ProjectService {
   ) {}
   async create({ createdBy, orgId }: CreateProjectDto) {
     const [newProject] = await this.projectRepository.query(
-      `INSERT INTO ${this.tableName} (org_id, created_by) VALUES ($1, $2) RETURNING *`,
+      `INSERT INTO ${this.tableName} ("orgId", "createdBy") VALUES ($1, $2) RETURNING *`,
       [orgId, createdBy],
     );
     this.logger.log('Created successfully');
@@ -56,7 +56,7 @@ export class ProjectService {
 
   async update(id: number, { createdBy, orgId }: UpdateProjectDto) {
     const project = await this.findOne(id);
-    await this.projectRepository.query(`UPDATE ${this.tableName} SET org_id = $1, created_by = $2 WHERE id = $3`, [
+    await this.projectRepository.query(`UPDATE ${this.tableName} SET orgId = $1, createdBy = $2 WHERE id = $3`, [
       orgId ?? project.orgId,
       createdBy ?? project.createdBy,
       project.id,

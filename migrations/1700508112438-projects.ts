@@ -7,21 +7,21 @@ export class Projects1700508112438 implements MigrationInterface {
     await queryRunner.query(`
             CREATE TABLE "projects" (
                 "id" SERIAL NOT NULL,
-                "org_id" integer NOT NULL,
-                "created_by" integer NOT NULL,
+                "orgId" integer NOT NULL,
+                "createdBy" integer NOT NULL,
                 CONSTRAINT "PK_6b031fcd0863e3f6b44230163e1" PRIMARY KEY ("id")
             )
         `);
 
     await queryRunner.query(`
         ALTER TABLE "projects"
-        ADD CONSTRAINT "FK_a6aa735704d3f00c6033c57f81h" FOREIGN KEY ("org_id") REFERENCES "organizations"("id") ON DELETE
+        ADD CONSTRAINT "FK_a6aa735704d3f00c6033c57f81h" FOREIGN KEY ("orgId") REFERENCES "organizations"("id") ON DELETE
         SET NULL ON UPDATE CASCADE
     `);
 
     await queryRunner.query(`
         ALTER TABLE "projects"
-        ADD CONSTRAINT "FK_a6aa735704d3f00c6033c57f81j" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE
+        ADD CONSTRAINT "FK_a6aa735704d3f00c6033c57f81j" FOREIGN KEY ("createdBy") REFERENCES "users"("id") ON DELETE
         SET NULL ON UPDATE CASCADE
     `);
   }

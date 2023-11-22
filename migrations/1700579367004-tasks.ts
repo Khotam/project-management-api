@@ -6,22 +6,22 @@ export class Tasks1700579367004 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
         ALTER TABLE "tasks"
-        ALTER COLUMN worker_user_id DROP NOT NULL
+        ALTER COLUMN "workerUserId" DROP NOT NULL
     `);
     await queryRunner.query(`
         ALTER TABLE "tasks"
-        ALTER COLUMN due_date DROP NOT NULL
+        ALTER COLUMN "dueDate" DROP NOT NULL
     `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
         ALTER TABLE "tasks"
-        ALTER COLUMN worker_user_id SET NOT NULL
+        ALTER COLUMN "workerUserId" SET NOT NULL
     `);
     await queryRunner.query(`
         ALTER TABLE "tasks"
-        ALTER COLUMN due_date SET NOT NULL
+        ALTER COLUMN "dueDate" SET NOT NULL
     `);
   }
 }
