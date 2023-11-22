@@ -114,7 +114,7 @@ export class TaskService {
     if (this.isTaskOverdue(task)) {
       status = TaskStatusEnum.DONE_OVERDUE;
     }
-    await this.taskRepository.query(`UPDATE ${this.tableName} SET status = $1, doneAt=$2 WHERE id = $3`, [
+    await this.taskRepository.query(`UPDATE ${this.tableName} SET status = $1, "doneAt"=$2 WHERE id = $3`, [
       status,
       new Date(),
       task.id,

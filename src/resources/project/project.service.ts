@@ -56,7 +56,7 @@ export class ProjectService {
 
   async update(id: number, { orgId, name }: UpdateProjectDto) {
     const project = await this.findOne(id);
-    await this.projectRepository.query(`UPDATE ${this.tableName} SET name = $1, orgId = $2 WHERE id = $3`, [
+    await this.projectRepository.query(`UPDATE ${this.tableName} SET name = $1, "orgId" = $2 WHERE id = $3`, [
       name ?? project.name,
       orgId ?? project.orgId,
       project.id,
