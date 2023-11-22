@@ -6,6 +6,7 @@ import { CreateOrganizationUserDto } from './dto/create-organization-user.dto';
 import { OrganizationUsersService } from './organization-user.service';
 import { Role } from '../auth/decorators/roles.decorator';
 import { UserRoleEnum } from 'src/shared/constants';
+import { UserId } from 'src/shared/decorators/user-id.decorator';
 
 @Controller('organizations/:orgId(\\d+)/users')
 @ApiTags('Organization Users')
@@ -16,8 +17,12 @@ export class OrganizationUsersController {
   @Post()
   @ApiOperation({ summary: 'Creates a user for organization' })
   @ApiResponse({ description: 'Successfull operation', type: User })
-  create(@Param('orgId') orgId: number, @Body() createOrganizationUserDto: CreateOrganizationUserDto) {
-    return this.organizationUsersService.create(orgId, createOrganizationUserDto);
+  create(
+    @UserId() userId: number,
+    @Param('orgId') orgId: number,
+    @Body() createOrganizationUserDto: CreateOrganizationUserDto,
+  ) {
+    return this.organizationUsersService.create(userId, orgId, createOrganizationUserDto);
   }
 
   @Role(UserRoleEnum.ADMIN)

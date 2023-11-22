@@ -17,10 +17,10 @@ export class ProjectService {
     @InjectRepository(Project) readonly projectRepository: Repository<Project>,
     readonly taskService: TaskService,
   ) {}
-  async create({ createdBy, orgId, name }: CreateProjectDto) {
+  async create(userId: number, { orgId, name }: CreateProjectDto) {
     const [newProject] = await this.projectRepository.query(
       `INSERT INTO ${this.tableName} (name, "orgId", "createdBy") VALUES ($1, $2, $3) RETURNING *`,
-      [name, orgId, createdBy],
+      [name, orgId, userId],
     );
     this.logger.log('Created successfully');
 
@@ -40,8 +40,8 @@ export class ProjectService {
     return this.taskService.findAllTasksByProject(projectId);
   }
 
-  async findAllTasksForUser(projectId: number, userId: number, status?: TaskStatusEnum) {
-    return this.taskService.findAllTasksByProjectAndUser(projectId, userId, status);
+  async findAllTasksForUser(userId: number, projectId: number, status?: TaskStatusEnum) {
+    return this.taskService.findAllTasksByProjectAndUser(userId, projectId, status);
   }
 
   async findOne(id: number): Promise<Project> {
@@ -54,12 +54,13 @@ export class ProjectService {
     return item;
   }
 
-  async update(id: number, { createdBy, orgId, name }: UpdateProjectDto) {
+  async update(id: number, { orgId, name }: UpdateProjectDto) {
     const project = await this.findOne(id);
-    await this.projectRepository.query(
-      `UPDATE ${this.tableName} SET name = $1, orgId = $2, createdBy = $3 WHERE id = $4`,
-      [name ?? project.name, orgId ?? project.orgId, createdBy ?? project.createdBy, project.id],
-    );
+    await this.projectRepository.query(`UPDATE ${this.tableName} SET name = $1, orgId = $2 WHERE id = $3`, [
+      name ?? project.name,
+      orgId ?? project.orgId,
+      project.id,
+    ]);
     this.logger.log('Successfully updated');
   }
 

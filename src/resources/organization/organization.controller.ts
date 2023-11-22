@@ -7,6 +7,7 @@ import { UpdateOrganizationDto } from './dto/update-organization.dto';
 import { Organization } from './entities/organization.entity';
 import { Role } from '../auth/decorators/roles.decorator';
 import { UserRoleEnum } from 'src/shared/constants';
+import { UserId } from 'src/shared/decorators/user-id.decorator';
 
 @Controller('organizations')
 @ApiTags('Organizations')
@@ -17,8 +18,8 @@ export class OrganizationController {
   @Post()
   @ApiOperation({ summary: 'Creates an organization' })
   @ApiResponse({ description: 'Successfull operation', type: Organization })
-  create(@Body() createOrganizationDto: CreateOrganizationDto) {
-    return this.organizationService.create(createOrganizationDto);
+  create(@UserId() userId: number, @Body() createOrganizationDto: CreateOrganizationDto) {
+    return this.organizationService.create(userId, createOrganizationDto);
   }
 
   @Role(UserRoleEnum.ADMIN)

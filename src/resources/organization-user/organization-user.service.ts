@@ -18,7 +18,7 @@ export class OrganizationUsersService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async create(orgId: number, { createdBy, name, role }: CreateOrganizationUserDto) {
+  async create(createdBy: number, orgId: number, { name, role }: CreateOrganizationUserDto) {
     await this.orgUsersRepository.query('BEGIN;');
 
     try {

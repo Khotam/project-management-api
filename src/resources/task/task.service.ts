@@ -13,10 +13,10 @@ export class TaskService {
   tableName = 'tasks';
 
   constructor(@InjectRepository(Task) readonly taskRepository: Repository<Task>) {}
-  async create({ createdBy, projectId, name }: CreateTaskDto) {
+  async create(userId: number, { projectId, name }: CreateTaskDto) {
     const [newTask] = await this.taskRepository.query(
       `INSERT INTO ${this.tableName} (name, "projectId", "createdBy") VALUES ($1, $2, $3) RETURNING *`,
-      [name, projectId, createdBy],
+      [name, projectId, userId],
     );
     this.logger.log('Created successfully');
 
@@ -43,12 +43,13 @@ export class TaskService {
     return item;
   }
 
-  async update(id: number, { createdBy, projectId, name }: UpdateTaskDto) {
+  async update(id: number, { projectId, name }: UpdateTaskDto) {
     const task = await this.findOne(id);
-    await this.taskRepository.query(
-      `UPDATE ${this.tableName} SET name = $1, projectId = $2, createdBy = $3 WHERE id = $4`,
-      [name ?? task.name, projectId ?? task.projectId, createdBy ?? task.createdBy, task.id],
-    );
+    await this.taskRepository.query(`UPDATE ${this.tableName} SET name = $1, projectId = $2 WHERE id = $3`, [
+      name ?? task.name,
+      projectId ?? task.projectId,
+      task.id,
+    ]);
     this.logger.log('Successfully updated');
   }
 
@@ -87,7 +88,7 @@ export class TaskService {
     return { tasks: items, count: count.count };
   }
 
-  async findAllTasksByProjectAndUser(projectId: number, userId: number, status?: TaskStatusEnum) {
+  async findAllTasksByProjectAndUser(userId: number, projectId: number, status?: TaskStatusEnum) {
     let whereQuery = `WHERE "projectId" = $1 AND "userId" = $2`;
     const queryParams: (number | TaskStatusEnum)[] = [projectId, userId];
     if (status) {

@@ -1,12 +1,8 @@
-import { IsDefined, IsNotEmpty, IsString, IsInt } from 'class-validator';
+import { IsDefined, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateOrganizationDto {
   @IsDefined()
   @IsNotEmpty()
   @IsString()
   name: string;
-
-  @IsDefined()
-  @IsInt()
-  createdBy: number;
 }

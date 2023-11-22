@@ -9,8 +9,4 @@ export class CreateProjectDto {
   @IsDefined()
   @IsInt()
   orgId: number;
-
-  @IsDefined()
-  @IsInt()
-  createdBy: number;
 }

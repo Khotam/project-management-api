@@ -9,8 +9,4 @@ export class CreateTaskDto {
   @IsDefined()
   @IsInt()
   projectId: number;
-
-  @IsDefined()
-  @IsInt()
-  createdBy: number;
 }

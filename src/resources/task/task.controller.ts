@@ -5,6 +5,7 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Role } from '../auth/decorators/roles.decorator';
 import { UserRoleEnum } from 'src/shared/constants';
+import { UserId } from 'src/shared/decorators/user-id.decorator';
 
 @Controller('tasks')
 @ApiTags('Tasks')
@@ -13,8 +14,8 @@ export class TaskController {
 
   @Role(UserRoleEnum.MANAGER)
   @Post()
-  create(@Body() createTaskDto: CreateTaskDto) {
-    return this.taskService.create(createTaskDto);
+  create(@UserId() userId: number, @Body() createTaskDto: CreateTaskDto) {
+    return this.taskService.create(userId, createTaskDto);
   }
 
   @Role(UserRoleEnum.MANAGER)
