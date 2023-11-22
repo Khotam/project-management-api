@@ -33,7 +33,14 @@ export class TaskService {
   }
 
   async findOne(id: number): Promise<Task> {
-    const [item] = await this.taskRepository.query(`SELECT * FROM ${this.tableName} WHERE id = $1`, [id]);
+    const [item] = await this.taskRepository.query(
+      `SELECT tsk.id, tsk.name, tsk.status, tsk."dueDate", tsk."doneAt", tsk."createdAt", proj.name as "project", usr.name as "assignee" 
+        FROM ${this.tableName} AS tsk
+          JOIN "projects" AS proj ON proj.id = tsk."projectId"
+          JOIN users as usr ON tsk."workerUserId" = usr.id
+        WHERE tsk.id = $1`,
+      [id],
+    );
     if (!item) {
       this.logger.debug('Item not found', id);
       throw new NotFoundException({ message: `Item with id: ${id} not found` });
