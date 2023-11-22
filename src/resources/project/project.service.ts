@@ -17,10 +17,10 @@ export class ProjectService {
     @InjectRepository(Project) readonly projectRepository: Repository<Project>,
     readonly taskService: TaskService,
   ) {}
-  async create({ createdBy, orgId }: CreateProjectDto) {
+  async create({ createdBy, orgId, name }: CreateProjectDto) {
     const [newProject] = await this.projectRepository.query(
-      `INSERT INTO ${this.tableName} ("orgId", "createdBy") VALUES ($1, $2) RETURNING *`,
-      [orgId, createdBy],
+      `INSERT INTO ${this.tableName} (name, "orgId", "createdBy") VALUES ($1, $2, $3) RETURNING *`,
+      [name, orgId, createdBy],
     );
     this.logger.log('Created successfully');
 
@@ -54,13 +54,12 @@ export class ProjectService {
     return item;
   }
 
-  async update(id: number, { createdBy, orgId }: UpdateProjectDto) {
+  async update(id: number, { createdBy, orgId, name }: UpdateProjectDto) {
     const project = await this.findOne(id);
-    await this.projectRepository.query(`UPDATE ${this.tableName} SET orgId = $1, createdBy = $2 WHERE id = $3`, [
-      orgId ?? project.orgId,
-      createdBy ?? project.createdBy,
-      project.id,
-    ]);
+    await this.projectRepository.query(
+      `UPDATE ${this.tableName} SET name = $1, orgId = $2, createdBy = $3 WHERE id = $4`,
+      [name ?? project.name, orgId ?? project.orgId, createdBy ?? project.createdBy, project.id],
+    );
     this.logger.log('Successfully updated');
   }
 

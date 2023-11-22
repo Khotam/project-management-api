@@ -6,6 +6,9 @@ export class Task {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
+  @Column({ type: 'varchar', unique: true })
+  name: string;
+
   @Column({ type: 'int' })
   projectId: number;
 
