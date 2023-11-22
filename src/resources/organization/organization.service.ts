@@ -34,7 +34,10 @@ export class OrganizationService {
   }
 
   async findOne(id: number): Promise<Organization> {
-    const [item] = await this.orgsRepository.query(`SELECT * FROM ${this.tableName} WHERE id = $1`, [id]);
+    const [item] = await this.orgsRepository.query(
+      `SELECT org.name, u.name as "createdBy" FROM ${this.tableName} as org JOIN "users" as u ON org."createdBy" = u.id WHERE org.id = $1`,
+      [id],
+    );
     if (!item) {
       this.logger.debug('Item not found', id);
       throw new NotFoundException({ message: `Item with id: ${id} not found` });

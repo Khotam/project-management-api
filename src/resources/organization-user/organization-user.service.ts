@@ -59,4 +59,9 @@ export class OrganizationUsersService {
 
     return { items, count: count.count };
   }
+
+  async removeUserFromOrganization(userId: number) {
+    await this.orgUsersRepository.query(`DELETE FROM ${this.organizationUserstableName} WHERE "userId" = $1`, [userId]);
+    this.logger.log('Removed user successfully from organization');
+  }
 }

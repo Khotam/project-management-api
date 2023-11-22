@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { User } from '../user/entity/user.entity';
@@ -23,6 +23,12 @@ export class OrganizationUsersController {
     @Body() createOrganizationUserDto: CreateOrganizationUserDto,
   ) {
     return this.organizationUsersService.create(userId, orgId, createOrganizationUserDto);
+  }
+
+  @Role(UserRoleEnum.ADMIN)
+  @Delete(':userId(\\d+)')
+  removeUserFromOrganization(@Param('userId') userId: number) {
+    return this.organizationUsersService.removeUserFromOrganization(userId);
   }
 
   @Role(UserRoleEnum.ADMIN)
