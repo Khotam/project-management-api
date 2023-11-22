@@ -11,6 +11,7 @@
 ### Missing features
 - Pagination, filtering, search and sorting (didn't have enough time and there were no strict requirements about it in the task description) :x: 
 - knex.js is not used (lack of experience in knex.js) :x:
+- Swagger is not configured well (lack of time) :x:
 
 ## Technologies used
 - Nodejs
