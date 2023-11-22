@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { User } from '../user/entity/user.entity';
@@ -9,14 +9,22 @@ import { UserRoleEnum } from 'src/shared/constants';
 
 @Controller('organizations/:orgId(\\d+)/users')
 @ApiTags('Organization Users')
-@Role(UserRoleEnum.ADMIN)
 export class OrganizationUsersController {
   constructor(private readonly organizationUsersService: OrganizationUsersService) {}
 
+  @Role(UserRoleEnum.ADMIN)
   @Post()
   @ApiOperation({ summary: 'Creates a user for organization' })
   @ApiResponse({ description: 'Successfull operation', type: User })
   create(@Param('orgId') orgId: number, @Body() createOrganizationUserDto: CreateOrganizationUserDto) {
     return this.organizationUsersService.create(orgId, createOrganizationUserDto);
+  }
+
+  @Role(UserRoleEnum.ADMIN)
+  @Get()
+  @ApiOperation({ summary: 'Finds all users of organization' })
+  @ApiResponse({ description: 'Successfull operation' })
+  findAll(@Param('orgId') orgId: number) {
+    return this.organizationUsersService.findAll(orgId);
   }
 }

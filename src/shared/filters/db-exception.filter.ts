@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
 import { EntityPropertyNotFoundError, TypeORMError } from 'typeorm';
-import { PostgresErrorCodes } from './constants';
+import { PostgresErrorCodes } from '../constants';
 
 @Catch(TypeORMError)
 export class DbExceptionsFilter implements ExceptionFilter {

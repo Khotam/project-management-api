@@ -5,7 +5,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import * as packageJson from '../package.json';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { DbExceptionsFilter } from './shared/db-exception.filter';
+import { DbExceptionsFilter } from './shared/filters/db-exception.filter';
 
 async function bootstrap(): Promise<void> {
   const version = packageJson.version;

@@ -5,6 +5,7 @@ import { Repository, TypeORMError } from 'typeorm';
 import { User } from '../user/entity/user.entity';
 import { OrganizationUsers } from './entity/organization-users.entity';
 import { CreateOrganizationUserDto } from './dto/create-organization-user.dto';
+import { FindAllResponse } from 'src/shared/types';
 
 @Injectable()
 export class OrganizationUsersService {
@@ -38,5 +39,24 @@ export class OrganizationUsersService {
       await this.orgUsersRepository.query('ROLLBACK;');
       throw new TypeORMError(error);
     }
+  }
+
+  async findAll(orgId: number): Promise<FindAllResponse<User>> {
+    const whereQuery = `WHERE "orgId" = $1`;
+    const queryParams = [orgId];
+    const joinClause = `JOIN ${this.organizationUserstableName} as ou ON u.id = ou."userId"`;
+
+    const itemsPromise = this.userRepository.query(
+      `SELECT u.id, u.name, ou."orgId" FROM ${this.userstableName} as u ${joinClause} ${whereQuery}`,
+      queryParams,
+    );
+    const countPromise = this.userRepository.query(
+      `SELECT COUNT(*) FROM ${this.userstableName} as u ${joinClause} ${whereQuery}`,
+      queryParams,
+    );
+    const [items, [count]] = await Promise.all([itemsPromise, countPromise]);
+    this.logger.log(`Items count: ${count.count}`);
+
+    return { items, count: count.count };
   }
 }

@@ -8,21 +8,23 @@ import { TaskStatusEnum, UserRoleEnum } from 'src/shared/constants';
 
 @Controller('projects')
 @ApiTags('Projects')
-@Role(UserRoleEnum.MANAGER)
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
+  @Role(UserRoleEnum.MANAGER)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createProjectDto: CreateProjectDto) {
     return this.projectService.create(createProjectDto);
   }
 
+  @Role(UserRoleEnum.MANAGER)
   @Get()
   findAll() {
     return this.projectService.findAll();
   }
 
+  @Role(UserRoleEnum.MANAGER)
   @Get(':projectId(\\d+)/tasks')
   findAllTasks(@Param('projectId') projectId: number) {
     return this.projectService.findAllTasks(projectId);
@@ -34,17 +36,20 @@ export class ProjectController {
     return this.projectService.findAllTasksForUser(projectId, userId, status);
   }
 
+  @Role(UserRoleEnum.MANAGER)
   @Get(':id(\\d+)')
   findOne(@Param('id') id: number) {
     return this.projectService.findOne(id);
   }
 
+  @Role(UserRoleEnum.MANAGER)
   @Put(':id(\\d+)')
   @HttpCode(HttpStatus.NO_CONTENT)
   update(@Param('id') id: number, @Body() updateProjectDto: UpdateProjectDto) {
     return this.projectService.update(id, updateProjectDto);
   }
 
+  @Role(UserRoleEnum.MANAGER)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id(\\d+)')
   remove(@Param('id') id: number) {
