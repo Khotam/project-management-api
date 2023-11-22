@@ -15,6 +15,7 @@ import { RolesGuard } from './resources/auth/guards/roles.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthModule } from './resources/auth/auth.module';
 import { AuthMiddleware } from './resources/auth/middlewares/auth.middleware';
+import { StatisticsModule } from './resources/statistics/statistics.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { AuthMiddleware } from './resources/auth/middlewares/auth.middleware';
     ProjectModule,
     TaskModule,
     AuthModule,
+    StatisticsModule,
   ],
   providers: [
     {
