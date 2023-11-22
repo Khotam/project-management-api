@@ -2,8 +2,10 @@ import { Controller, Get } from '@nestjs/common';
 import { StatisticsService } from './statistics.service';
 import { Role } from '../auth/decorators/roles.decorator';
 import { UserRoleEnum } from 'src/shared/constants';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('statistics')
+@ApiTags('Statistics')
 export class StatisticsController {
   constructor(private readonly statisticsService: StatisticsService) {}
 
