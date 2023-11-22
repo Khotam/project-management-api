@@ -12,5 +12,5 @@ export default () => ({
     name: process.env.DB_NAME,
     tableSchemaAutoUpdate: process.env.TABLE_SCHEMA_AUTO_UPDATE === 'true',
   },
-  jwtSecretKEy: process.env.JWT_SECRET_KEY,
+  jwtSecretKey: process.env.JWT_SECRET_KEY,
 });
