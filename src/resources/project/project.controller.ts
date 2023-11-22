@@ -2,9 +2,13 @@ import { Controller, Get, Post, Body, Param, Delete, Put, HttpCode, HttpStatus, 
 import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
-import { FindProjectTasksDto } from './dto/find-project-tasks.dto';
+import { ApiTags } from '@nestjs/swagger';
+import { Role } from '../auth/decorators/roles.decorator';
+import { TaskStatusEnum, UserRoleEnum } from 'src/shared/constants';
 
 @Controller('projects')
+@ApiTags('Projects')
+@Role(UserRoleEnum.MANAGER)
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
@@ -20,8 +24,14 @@ export class ProjectController {
   }
 
   @Get(':projectId(\\d+)/tasks')
-  findAllTasks(@Param('projectId') projectId: number, @Query() findProjectTasksDto?: FindProjectTasksDto) {
-    return this.projectService.findAllTasks(projectId, findProjectTasksDto);
+  findAllTasks(@Param('projectId') projectId: number) {
+    return this.projectService.findAllTasks(projectId);
+  }
+
+  @Role(UserRoleEnum.EMPLOYEE)
+  @Get(':projectId(\\d+)/user/:userId(\\d+)/tasks')
+  findAllTasksForUser(@Param() { projectId, userId }: Record<string, number>, @Query() status?: TaskStatusEnum) {
+    return this.projectService.findAllTasksForUser(projectId, userId, status);
   }
 
   @Get(':id(\\d+)')

@@ -5,9 +5,12 @@ import { OrganizationService } from './organization.service';
 import { CreateOrganizationDto } from './dto/create-organization.dto';
 import { UpdateOrganizationDto } from './dto/update-organization.dto';
 import { Organization } from './entities/organization.entity';
+import { Role } from '../auth/decorators/roles.decorator';
+import { UserRoleEnum } from 'src/shared/constants';
 
 @Controller('organizations')
 @ApiTags('Organizations')
+@Role(UserRoleEnum.ADMIN)
 export class OrganizationController {
   constructor(private readonly organizationService: OrganizationService) {}
 

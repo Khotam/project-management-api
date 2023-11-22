@@ -6,7 +6,7 @@ import { Project } from './entities/project.entity';
 import { Repository } from 'typeorm';
 import { FindAllResponse } from 'src/shared/types';
 import { TaskService } from '../task/task.service';
-import { FindProjectTasksDto } from './dto/find-project-tasks.dto';
+import { TaskStatusEnum } from 'src/shared/constants';
 
 @Injectable()
 export class ProjectService {
@@ -36,8 +36,12 @@ export class ProjectService {
     return { items, count: count.count };
   }
 
-  async findAllTasks(projectId: number, findProjectTasksDto?: FindProjectTasksDto) {
-    return this.taskService.findAllTasksByProject(projectId, findProjectTasksDto);
+  async findAllTasks(projectId: number) {
+    return this.taskService.findAllTasksByProject(projectId);
+  }
+
+  async findAllTasksForUser(projectId: number, userId: number, status?: TaskStatusEnum) {
+    return this.taskService.findAllTasksByProjectAndUser(projectId, userId, status);
   }
 
   async findOne(id: number): Promise<Project> {

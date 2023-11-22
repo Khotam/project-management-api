@@ -6,7 +6,6 @@ import { Task } from './entities/task.entity';
 import { Repository } from 'typeorm';
 import { FindAllResponse } from 'src/shared/types';
 import { TaskStatusEnum } from 'src/shared/constants';
-import { FindProjectTasksDto } from '../project/dto/find-project-tasks.dto';
 
 @Injectable()
 export class TaskService {
@@ -76,17 +75,27 @@ export class TaskService {
     this.logger.log('Successfully updated');
   }
 
-  async findAllTasksByProject(projectId: number, { status, userId }: FindProjectTasksDto) {
-    let whereQuery = `WHERE project_id = $1`;
-    const queryParams: (string | number)[] = [projectId];
-    if (userId) {
-      queryParams.push(userId);
-      whereQuery += ` AND worker_user_id = $${queryParams.length}`;
-    }
+  async findAllTasksByProject(projectId: number) {
+    const whereQuery = `WHERE project_id = $1`;
+    const queryParams = [projectId];
+
+    const itemsPromise = this.taskRepository.query(`SELECT * FROM ${this.tableName} ${whereQuery}`, queryParams);
+    const countPromise = this.taskRepository.query(`SELECT COUNT(*) FROM ${this.tableName} ${whereQuery}`, queryParams);
+
+    const [items, [count]] = await Promise.all([itemsPromise, countPromise]);
+    this.logger.log(`Items count: ${count.count}`);
+
+    return { tasks: items, count: count.count };
+  }
+
+  async findAllTasksByProjectAndUser(projectId: number, userId: number, status?: TaskStatusEnum) {
+    let whereQuery = `WHERE project_id = $1 AND user_id = $2`;
+    const queryParams: (number | TaskStatusEnum)[] = [projectId, userId];
     if (status) {
+      whereQuery += ` AND status = $3`;
       queryParams.push(status);
-      whereQuery += ` AND status = $${queryParams.length}`;
     }
+
     const itemsPromise = this.taskRepository.query(`SELECT * FROM ${this.tableName} ${whereQuery}`, queryParams);
     const countPromise = this.taskRepository.query(`SELECT COUNT(*) FROM ${this.tableName} ${whereQuery}`, queryParams);
 

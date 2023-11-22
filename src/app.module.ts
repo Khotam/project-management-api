@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
@@ -11,6 +11,10 @@ import { OrganizationModule } from './resources/organization/organization.module
 import { ProjectModule } from './resources/project/project.module';
 import { TaskModule } from './resources/task/task.module';
 import { OrganizationUsersModule } from './resources/organization-user/organization-user.module';
+import { RolesGuard } from './resources/auth/guards/roles.guard';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthModule } from './resources/auth/auth.module';
+import { AuthMiddleware } from './resources/auth/middlewares/auth.middleware';
 
 @Module({
   imports: [
@@ -44,6 +48,17 @@ import { OrganizationUsersModule } from './resources/organization-user/organizat
     OrganizationUsersModule,
     ProjectModule,
     TaskModule,
+    AuthModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware).forRoutes('*');
+  }
+}

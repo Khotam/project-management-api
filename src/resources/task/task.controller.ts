@@ -2,8 +2,13 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Put, HttpCode, HttpS
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { ApiTags } from '@nestjs/swagger';
+import { Role } from '../auth/decorators/roles.decorator';
+import { UserRoleEnum } from 'src/shared/constants';
 
 @Controller('tasks')
+@ApiTags('Tasks')
+@Role(UserRoleEnum.MANAGER)
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
@@ -46,6 +51,7 @@ export class TaskController {
     return this.taskService.assignDueDate(id, dueDate);
   }
 
+  @Role(UserRoleEnum.EMPLOYEE)
   @Post(':id(\\d+)/complete')
   completeTask(@Param('id') id: number) {
     return this.taskService.completeTask(id);
