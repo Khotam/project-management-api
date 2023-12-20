@@ -1,7 +1,7 @@
 import * as process from 'process';
 
 export default () => ({
-  port: parseInt(process.env.PORT) || 3000,
+  port: parseInt(process.env.HTTP_PORT) || 3000,
   environment: process.env.NODE_ENV || 'dev',
   database: {
     logging: process.env.NODE_ENV === 'dev',

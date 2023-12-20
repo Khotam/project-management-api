@@ -1,13 +1,36 @@
-version: '3.9'
+version: '3.8'
 
 services:
-  postgres:
-    container_name: postgres
-    image: postgres:latest
-    environment:
-      POSTGRES_DB: project-management-db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - 5432:5432
+  postgresdb:
+    image: postgres
     restart: unless-stopped
+    env_file: .env
+    environment:
+      - POSTGRES_USER=$DB_USER
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+      - POSTGRES_DB=$DB_NAME
+    ports:
+      - $DB_PORT:$DB_PORT
+    volumes:
+      - db:/var/lib/postgres
+  app:
+    depends_on:
+      - postgresdb
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - $HTTP_PORT:$HTTP_PORT
+    environment:
+      - DB_HOST=postgresdb
+      - DB_USER=$DB_USER
+      - DB_PASSWORD=$DB_PASSWORD
+      - DB_NAME=$DB_NAME
+      - DB_PORT=$DB_PORT
+      - HTTP_PORT=$HTTP_PORT
+      - JWT_SECRET_KEY=$JWT_SECRET_KEY
+    stdin_open: true
+    tty: true
+
+volumes:
+  db:
