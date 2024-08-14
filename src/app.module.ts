@@ -40,7 +40,7 @@ import { StatisticsModule } from './resources/statistics/statistics.module';
       }),
     }),
     ConfigModule.forRoot({
-      envFilePath: `${process.cwd()}/.env-${process.env.NODE_ENV?.trim() || 'dev'}`,
+      envFilePath: `${process.cwd()}/.env}`,
       isGlobal: true,
       load: [config],
     }),

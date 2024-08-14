@@ -1,6 +1,6 @@
 FROM node:20.10.0-alpine
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 COPY package*.json ./
 
@@ -12,6 +12,8 @@ RUN npm run build
 
 COPY . .
 
-EXPOSE 3000
+ENV HTTP_PORT 8080
+ENV NODE_ENV production
+EXPOSE 8080
 CMD ["npm", "run", "start:prod"]
 
