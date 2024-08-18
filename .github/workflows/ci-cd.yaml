@@ -35,6 +35,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: '${{ env.REGISTRY }}/${{ env.REPO_NAME }}:${{ github.sha }}'
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_NAME }}:buildcache
-          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.REPO_NAME }}:buildcache,mode=max
+          tags: '${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.sha }}'
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:buildcache,mode=max
