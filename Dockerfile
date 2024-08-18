@@ -12,8 +12,6 @@ RUN npm run build
 
 COPY . .
 
-ENV HTTP_PORT 8080
-ENV NODE_ENV production
 EXPOSE 8080
 CMD ["npm", "run", "start:prod"]
 
