@@ -9,6 +9,10 @@ on:
 env:
   CONTAINER_NAME: pm-app-api
   REGISTRY: ghcr.io
+  SSH_HOST: ${{ secrets.SERVER_API }}
+  SSH_USER: $${{ secrets.SERVER_USER }}
+  SSH_KEY: ${{ secrets.SERVER_PRIVATE_KEY }}
+  PORT: 8080:8080
 
 jobs:
   build_and_push:
@@ -38,3 +42,22 @@ jobs:
           tags: '${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.sha }}'
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:buildcache
           cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:buildcache,mode=max
+  deploy:
+    needs: build_and_push
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Executing remote ssh commands to deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: '${{ env.SSH_HOST }}'
+          username: '${{ env.SSH_USER }}'
+          key: '${{ env.SSH_KEY }}'
+          script: |
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login -u ${{ github.actor }} --password-stdin ${{ env.REGISTRY }}
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.sha }}
+            docker stop ${{ env.CONTAINER_NAME }} || true
+            docker rm ${{ env.CONTAINER_NAME }} || true
+            docker run -d -p ${{ env.PORT }} --name ${{ env.CONTAINER_NAME }} ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.sha }}
