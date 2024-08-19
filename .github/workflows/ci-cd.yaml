@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 env:
-  CONTAINER_NAME: pm-app-api
+  CONTAINER_NAME: project-management-api
   REGISTRY: ghcr.io
   # SSH_HOST: ${{ secrets.SERVER_IP }}
   # SSH_USER: $${{ secrets.SSH_USER }}
