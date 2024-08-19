@@ -9,9 +9,9 @@ on:
 env:
   CONTAINER_NAME: pm-app-api
   REGISTRY: ghcr.io
-  SSH_HOST: ${{ secrets.SERVER_IP }}
-  SSH_USER: $${{ secrets.SERVER_USER }}
-  SSH_KEY: ${{ secrets.SERVER_PRIVATE_KEY }}
+  # SSH_HOST: ${{ secrets.SERVER_IP }}
+  # SSH_USER: $${{ secrets.SSH_USER }}
+  # SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
   PORT: 8080:8080
 
 jobs:
@@ -49,15 +49,28 @@ jobs:
       contents: read
       packages: write
     steps:
-      - name: Executing remote ssh commands to deploy
+      - name: Executing remote SSH commands to deploy
         uses: appleboy/ssh-action@master
         with:
-          host: '${{ env.SSH_HOST }}'
-          username: '${{ env.SSH_USER }}'
-          key: '${{ env.SSH_KEY }}'
+          host: '${{ secrets.SSH_HOST }}'
+          username: '${{ secrets.SSH_USER }}'
+          key: '${{ secrets.SSH_KEY }}'
+          port: '${{ secrets.SSH_PORT }}'
           script: |
             echo ${{ secrets.GITHUB_TOKEN }} | docker login -u ${{ github.actor }} --password-stdin ${{ env.REGISTRY }}
-            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.sha }}
-            docker stop ${{ env.CONTAINER_NAME }} || true
-            docker rm ${{ env.CONTAINER_NAME }} || true
-            docker run -d -p ${{ env.PORT }} --name ${{ env.CONTAINER_NAME }} ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.sha }}
+            docker pull "${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.sha }}"
+            docker stop "${{ env.CONTAINER_NAME }}" || true
+            docker rm "${{ env.CONTAINER_NAME }}" || true
+            docker run -d --name "${{ env.CONTAINER_NAME }}" -p "${{ env.PORT }}" "${{ env.REGISTRY }}/${{ env.REPO_NAME }}:${{ github.sha }}"
+      # - name: Executing remote ssh commands to deploy
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: '${{ env.SSH_HOST }}'
+      #     username: '${{ env.SSH_USER }}'
+      #     key: '${{ env.SSH_KEY }}'
+      #     script: |
+      #       echo ${{ secrets.GITHUB_TOKEN }} | docker login -u ${{ github.actor }} --password-stdin ${{ env.REGISTRY }}
+      #       docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.sha }}
+      #       docker stop ${{ env.CONTAINER_NAME }} || true
+      #       docker rm ${{ env.CONTAINER_NAME }} || true
+      #       docker run -d -p ${{ env.PORT }} --name ${{ env.CONTAINER_NAME }} ${{ env.REGISTRY }}/${{ env.IMAGE_REPOSITORY }}:${{ github.sha }}
