@@ -69,4 +69,4 @@ jobs:
             docker pull ${{ env.DOCKERHUB_USERNAME }}/${{ env.CONTAINER_NAME }}:${{ github.sha }}
             docker stop ${{ env.CONTAINER_NAME }} || true
             docker rm ${{ env.CONTAINER_NAME }} || true
-            docker run -d --name ${{ env.CONTAINER_NAME }} -p ${{ env.PORT }} ${{ env.DOCKERHUB_USERNAME }}/${{ env.CONTAINER_NAME }}:${{ github.sha }} --env-file /home/ubuntu/pm-api/.env
+            docker run -d --name ${{ env.CONTAINER_NAME }} -p ${{ env.PORT }} ${{ env.DOCKERHUB_USERNAME }}/${{ env.CONTAINER_NAME }}:${{ github.sha }} --env-file /home/ubuntu/pm-app/.env
